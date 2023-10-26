@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Plane : MonoBehaviour
 {
@@ -9,6 +11,7 @@ public class Plane : MonoBehaviour
     public Transform GoalTransform; //Hangar goes in here, to use for its location as a goal to move to.
     public GameObject FloorObject; //Floor plane goes in here, to use for finding our patrol locations.
     public bool Patrolling = true; //Set to true if this plane is driving to random locations.
+    public GameObject PlaneTypeTextObject;
 
     private NavMeshAgent navAgent;
     private Vector3 navMin;
@@ -21,6 +24,8 @@ public class Plane : MonoBehaviour
         if (navAgent == null || FloorObject == null) return;
         navMin = FloorObject.GetComponent<MeshFilter>().mesh.bounds.min;
         navMax = FloorObject.GetComponent<MeshFilter>().mesh.bounds.max;
+        TextMeshProUGUI PlaneTypeText = PlaneTypeTextObject.GetComponent<TextMeshProUGUI>();
+        PlaneTypeText.SetText( PlaneTypeBrand, true );
 
         if(Patrolling)
         {

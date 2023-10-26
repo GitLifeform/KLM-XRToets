@@ -13,11 +13,13 @@ public class GameManager : MonoBehaviour
 {
     public GameObject[] Hangars;
     public GameObject[] Planes;
-    public Button LightsOnButton, ParkButton;
+    public Button LightsOnButton, ParkButton, CameraButton;
     public GameObject SuccessText;
 
     private bool ParkingPlanes = false;
-    public List<NavMeshAgent> NavAgents;
+    private List<NavMeshAgent> NavAgents = new List<NavMeshAgent>();
+    private List<Camera> PlaneCameras = new List<Camera>();
+    private Camera MainCamera;
 
 
     int RandomSort(GameObject a, GameObject b)
@@ -30,7 +32,8 @@ public class GameManager : MonoBehaviour
     {
         LightsOnButton.onClick.AddListener(ToggleLights);
         ParkButton.onClick.AddListener(ParkToggle);
-
+        CameraButton.onClick.AddListener(ToggleCamera);
+        
         //Shuffle arrays for some randomness
         System.Array.Sort(Hangars, RandomSort);
         System.Array.Sort(Planes, RandomSort);
@@ -40,10 +43,12 @@ public class GameManager : MonoBehaviour
         {
             Hangars[i].GetComponent<TextMeshPro>().SetText(i.ToString(), true);
             Planes[i].GetComponent<TextMeshPro>().SetText(i.ToString(), true);
-            Plane curPlane = Planes[i].GetComponent<Plane>();
-            curPlane.GoalTransform = Hangars[i].transform;
+            Planes[i].GetComponent<Plane>().GoalTransform = Hangars[i].transform;
+            Planes[i].GetComponent<NavMeshAgent>();
             NavAgents.Add(Planes[i].GetComponent<NavMeshAgent>());
+            PlaneCameras.Add(Planes[i].GetComponentInChildren<Camera>(true));
         }
+        MainCamera = Camera.main;
     }
 
     void ParkToggle()
@@ -71,6 +76,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void ToggleCamera()
+    {
+        if(MainCamera.isActiveAndEnabled)
+        {
+            PlaneCameras[Random.Range(0, PlaneCameras.Count - 1)].enabled = true;
+            MainCamera.enabled = false;
+        }
+        else
+        {
+            for (int i = 0; i < PlaneCameras.Count; ++i)
+            {
+                PlaneCameras[i].enabled = false;
+            }
+            MainCamera.enabled = true;
+        }
+        CameraButton.GetComponentInChildren<Text>().text = MainCamera.enabled ? "Pilot view" : "Overview";
+
+    }
     void ToggleLights()
     {
         for (int i = 0; i < Planes.Length; ++i)
