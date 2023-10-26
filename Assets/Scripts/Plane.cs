@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class Plane : MonoBehaviour
 {
-    public string PlaneTypeBrand = "Unassigned";
+    public PlaneData BrandTypeData; //ScriptableObject containing Type and Brand 
     public Transform GoalTransform; //Hangar goes in here, to use for its location as a goal to move to.
     public GameObject FloorObject; //Floor plane goes in here, to use for finding our patrol locations.
     public bool Patrolling = true; //Set to true if this plane is driving to random locations.
@@ -25,7 +25,7 @@ public class Plane : MonoBehaviour
         navMin = FloorObject.GetComponent<MeshFilter>().mesh.bounds.min;
         navMax = FloorObject.GetComponent<MeshFilter>().mesh.bounds.max;
         TextMeshProUGUI PlaneTypeText = PlaneTypeTextObject.GetComponent<TextMeshProUGUI>();
-        PlaneTypeText.SetText( PlaneTypeBrand, true );
+        PlaneTypeText.SetText(BrandTypeData.Brand + " " + BrandTypeData.PlaneType, true );
 
         if(Patrolling)
         {
